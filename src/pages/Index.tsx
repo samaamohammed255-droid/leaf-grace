@@ -1,13 +1,15 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { StressDodger } from "@/components/StressDodger";
+import { Helmet } from "react-helmet";
 
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
-    </div>
+    <>
+      <Helmet>
+        <title>Stress Dodger - A Calming Mindfulness Game</title>
+        <meta name="description" content="Find peace with Stress Dodger. A relaxing web game where you guide a gentle leaf through falling rain. Perfect for mindful breaks and stress relief." />
+      </Helmet>
+      <StressDodger />
+    </>
   );
 };
 

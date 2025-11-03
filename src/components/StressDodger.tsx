@@ -32,7 +32,25 @@ export const StressDodger = () => {
 
   const LEAF_SIZE = 60;
   const RAINDROP_SIZE = 30;
-  const DROP_INTERVAL = 1500; // ms between drops
+  const BASE_DROP_INTERVAL = 1500; // ms between drops at start
+  const BASE_SPEED = 1;
+  const MIN_DROP_INTERVAL = 400; // fastest drop rate
+  
+  // Calculate difficulty multiplier based on time alive
+  const getDifficultyMultiplier = () => {
+    // Difficulty increases every 5 seconds
+    return Math.min(1 + (timeAlive / 10), 3); // Max 3x difficulty
+  }
+  
+  const getCurrentDropInterval = () => {
+    const multiplier = getDifficultyMultiplier();
+    return Math.max(MIN_DROP_INTERVAL, BASE_DROP_INTERVAL / multiplier);
+  }
+  
+  const getCurrentSpeed = () => {
+    const multiplier = getDifficultyMultiplier();
+    return BASE_SPEED * multiplier;
+  }
 
   // Handle mouse/touch movement
   const handleMove = (clientX: number) => {
@@ -85,13 +103,15 @@ export const StressDodger = () => {
       const elapsed = timestamp - startTimeRef.current;
       setTimeAlive(Math.floor(elapsed / 1000));
 
-      // Spawn new raindrops
-      if (timestamp - lastDropTimeRef.current > DROP_INTERVAL) {
+      // Spawn new raindrops (difficulty increases over time)
+      const currentDropInterval = getCurrentDropInterval();
+      if (timestamp - lastDropTimeRef.current > currentDropInterval) {
+        const baseSpeed = getCurrentSpeed();
         const newDrop: Raindrop = {
           id: nextDropIdRef.current++,
           x: Math.random() * 90 + 5, // 5% to 95%
           y: -50,
-          speed: 1 + Math.random() * 0.5, // random speed
+          speed: baseSpeed + Math.random() * 0.5, // random speed variation
         };
         setRaindrops(prev => [...prev, newDrop]);
         lastDropTimeRef.current = timestamp;
